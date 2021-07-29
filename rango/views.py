@@ -1,12 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from rango.models import Category
-from rango.models import Page
-from rango.forms import CategoryForm
-from django.shortcuts import redirect
+from rango.models import Category, Page 
+from rango.forms import CategoryForm, PageForm, UserForm, UserProfileForm
 from django.urls import reverse
-from rango.forms import PageForm
-from rango.forms import UserForm, UserProfileForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 
@@ -49,7 +45,7 @@ def add_category(request):
 
         if form.is_valid():
             form.save(commit=True)
-            return redirect('rango:index')
+            return redirect(reverse('rango:index'))
         else:
             print(form.errors)
     return render(request, 'rango/add_category.html', {'form': form})
@@ -135,11 +131,9 @@ def user_login(request):
     else:
         return render(request, 'rango/login.html')
 
-@login_required
 def restricted(request):
-    return HttpResponse("Since you're logged in, you can see this text!")
+    return render(request, 'rango/restricted.html')
 
-@login_required
 def user_logout(request):
     logout(request)
     return redirect(reverse('rango:index'))
